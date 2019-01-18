@@ -14,27 +14,32 @@ import com.howshea.read.model.Feed
  * Created by Howshea
  * on 2018/10/25
  */
-class FeedAdapter(items: MutableList<Feed.Results>, private val fragment: Fragment) : BaseAdapter<Feed.Results, ItemFeedAdapterBinding>(items, R.layout.item_feed_adapter) {
-    override fun bindItem(binding: ItemFeedAdapterBinding, item: Feed.Results) {
-        binding.feed = item
-        Glide.with(fragment)
-            .load(item.site.icon)
-            .transition(withCrossFade())
-            .apply(RequestOptions().placeholder(R.color.divider))
-            .into(binding.imgIcon)
-        if (!(item.cover == "none" || item.cover == null)) {
-            Glide.with(fragment)
-                .load(item.cover)
-                .transition(withCrossFade())
-                .apply(RequestOptions().placeholder(R.color.divider))
-                .into(binding.imgCover)
-        }
-    }
+class FeedAdapter(items: MutableList<Feed.Results>, private val fragment: Fragment) :
+	BaseAdapter<Feed.Results, ItemFeedAdapterBinding>(items, R.layout.item_feed_adapter) {
+	override fun bindItem(binding: ItemFeedAdapterBinding, item: Feed.Results) {
+		binding.feed = item
+	}
 
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        if (holder.getBinding().imgCover.visibility == View.VISIBLE) {
-            Glide.with(fragment).clear(holder.getBinding().imgCover)
-        }
-    }
+	override fun bindAfterExecute(binding: ItemFeedAdapterBinding, item: Feed.Results) {
+		Glide.with(fragment)
+			.load(item.site.icon)
+			.transition(withCrossFade())
+			.apply(RequestOptions().placeholder(R.color.divider))
+			.into(binding.imgIcon)
+		//接口里会出现图片地址是字符串 "none"
+		if (!(item.cover == "none" || item.cover == null)) {
+			Glide.with(fragment)
+				.load(item.cover)
+				.transition(withCrossFade())
+				.apply(RequestOptions().placeholder(R.color.divider))
+				.into(binding.imgCover)
+		}
+	}
+
+	override fun onViewRecycled(holder: ViewHolder) {
+		super.onViewRecycled(holder)
+		if (holder.getBinding().imgCover.visibility == View.VISIBLE) {
+			Glide.with(fragment).clear(holder.getBinding().imgCover)
+		}
+	}
 }
